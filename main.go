@@ -3,6 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+
+	// "github.com/martinusdawan/go-gemin/controllers"
+	"controllers/controllers"
+
 	"log"
 	"math/rand"
 	"net/http"
@@ -11,7 +15,6 @@ import (
 
 	// "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/martinusdawan/go-gemin/controllers"
 )
 
 const (
