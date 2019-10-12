@@ -11,6 +11,7 @@ import (
 
 	// "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/martinusdawan/go-gemin/controllers"
 )
 
 const (
@@ -89,12 +90,13 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	// Router
-	r := mux.NewRouter()
-	r.HandleFunc("/articles", ArticleGETALLHanddler).Methods("GET")
-	r.HandleFunc("/articles", CreatePostHandler).Methods("POST")
-	r.HandleFunc("/articles/{category}/{id:[0-9]}", ArticleHandler).Methods("GET")
+	handler := controllers.New()
+
+	// r.HandleFunc("/articles", ArticleGETALLHanddler).Methods("GET")
+	// r.HandleFunc("/articles", CreatePostHandler).Methods("POST")
+	// r.HandleFunc("/articles/{category}/{id:[0-9]}", ArticleHandler).Methods("GET")
 	srv := &http.Server{
-		Handler:           r,
+		Handler:           handler,
 		Addr:              "127.0.0.1:" + defaultPort,
 		WriteTimeout:      writeTimeout,
 		ReadTimeout:       readTimeout,
