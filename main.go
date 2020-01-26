@@ -1,20 +1,12 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-
-	// "github.com/martinusdawan/go-gemin/controllers"
-	"controllers/controllers"
-
 	"log"
-	"math/rand"
 	"net/http"
-	"strconv"
 	"time"
 
-	// "github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
+	_ "github.com/gorilla/mux"
+	"go-gemin/controllers"
 )
 
 const (
@@ -26,22 +18,13 @@ const (
 
 	HTTPMethodOverrideHeader  = "X-HTTP-Method-Override"
 	HTTPMethodOverrideFormKey = "_method"
+	//methodsOk := []string{"GET", "HEAD", "POST", "PUT", "OPTIONS"}
 )
 
 type loggingResponseWriter struct {
 	http.ResponseWriter
 	statusCode int
 }
-
-type Articles struct {
-	ID       string    `json:"id"`
-	Title    string    `json:"title"`
-	Post     string    `json:"post"`
-	Complete bool      `json:"complete"`
-	CreateAt time.Time `json:"created_at"`
-}
-
-var Article []Articles
 
 func NewLoggingResponseWriter(w http.ResponseWriter) *loggingResponseWriter {
 	return &loggingResponseWriter{w, http.StatusOK}
@@ -64,40 +47,12 @@ func wrapHandlerWithLogging(wrappedHandler http.Handler) http.Handler {
 	})
 }
 
-func ArticleGETALLHanddler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(Article)
-}
-
-func ArticleHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	w.WriteHeader(http.StatusAccepted)
-	// Articles := Article{
-	// 	Article{Title: "ASD", CreateAt: time.Now().Unix()},
-	// 	Article{Title: "ASD", CreateAt: time.Now().Unix()},
-	// }
-	// json.E
-	fmt.Fprintf(w, "Categorys is: %v\n", vars["category"])
-	fmt.Fprintf(w, "ID is: %v\n", vars["id"])
-}
-
-func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	var articles Articles
-	_ = json.NewDecoder(r.Body).Decode(&articles)
-	articles.ID = strconv.Itoa(rand.Intn(10000))
-	Article = append(Article, articles)
-	json.NewEncoder(w).Encode(&articles)
-}
 
 func main() {
 
 	// Router
 	handler := controllers.New()
 
-	// r.HandleFunc("/articles", ArticleGETALLHanddler).Methods("GET")
-	// r.HandleFunc("/articles", CreatePostHandler).Methods("POST")
-	// r.HandleFunc("/articles/{category}/{id:[0-9]}", ArticleHandler).Methods("GET")
 	srv := &http.Server{
 		Handler:           handler,
 		Addr:              "127.0.0.1:" + defaultPort,
@@ -108,6 +63,7 @@ func main() {
 	}
 	// log.Fatal(srv.ListenAndServe())
 	// http.ListenAndServe(":8008", handlers.CORS()(r))
+	log.Printf("Listen on address %s", defaultPort)
 	err := srv.ListenAndServe()
 	if err != nil {
 		log.Printf("ERR ListenAndServe: %s")

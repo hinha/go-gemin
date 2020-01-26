@@ -1,4 +1,4 @@
-package signup
+package users
 
 import (
 	"net/http"
